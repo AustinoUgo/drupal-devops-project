@@ -1,0 +1,24 @@
+---
+- name: Create Drupal directory
+  file:
+    path: /opt/drupal
+    state: directory
+    mode: '0755'
+
+- name: Deploy Drupal container
+  shell: |
+    docker pull austinodocker/drupal-app:v1
+    docker stop drupal || true
+    docker rm drupal || true
+    docker run -d \
+      --name drupal \
+      -p 80:80 \
+      -e DB_HOST={{ rds_endpoint }} \
+      -e DB_NAME=drupaldb \
+      -e DB_USER=drupaladmin \
+      -e DB_PASSWORD={{ db_password }} \
+      -v drupal-files:/var/www/html/sites/default/files \
+      --restart always \
+      austinodocker/drupal-app:v1
+  args:
+    creates: /opt/drupal/deployed

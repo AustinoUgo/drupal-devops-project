@@ -1,0 +1,17 @@
+---
+- name: Configure Drupal Application Servers
+  hosts: drupal_servers
+  become: yes
+  vars:
+    rds_endpoint: "REPLACE_WITH_RDS_ENDPOINT"
+    db_password: "REPLACE_WITH_DB_PASSWORD"
+  roles:
+    - docker
+    - drupal
+
+- name: Configure Monitoring Server
+  hosts: monitoring
+  become: yes
+  roles:
+    - docker
+    - monitoring
